@@ -1,0 +1,57 @@
+#!/bin/sh
+
+THEME="Clix-OpenAI"
+SIZE="32"
+
+case "$1" in
+    apply)
+        mkdir -p "$HOME/.icons/default"
+
+        cat > "$HOME/.icons/default/index.theme" <<EOT
+[Icon Theme]
+Inherits=$THEME
+EOT
+
+        mkdir -p "$HOME/.config/gtk-3.0"
+
+        cat > "$HOME/.config/gtk-3.0/settings.ini" <<EOT
+[Settings]
+gtk-cursor-theme-name=$THEME
+gtk-cursor-theme-size=$SIZE
+EOT
+
+        mkdir -p "$HOME/.config/gtk-4.0"
+
+        cat > "$HOME/.config/gtk-4.0/settings.ini" <<EOT
+[Settings]
+gtk-cursor-theme-name=$THEME
+gtk-cursor-theme-size=$SIZE
+EOT
+
+        export XCURSOR_THEME="$THEME"
+        export XCURSOR_SIZE="$SIZE"
+
+        if command -v gsettings >/dev/null 2>&1; then
+            gsettings set org.gnome.desktop.interface cursor-theme "$THEME" 2>/dev/null || true
+            gsettings set org.gnome.desktop.interface cursor-size "$SIZE" 2>/dev/null || true
+        fi
+
+        echo "✅ Clix applied!"
+        echo "🖱️ Theme: $THEME"
+        echo "🔄 Restart Linux GUI apps to see it."
+        ;;
+
+    info)
+        echo "Clix 1.0.1"
+        echo "Theme: $THEME"
+        echo "Cursor: OpenAI-inspired CJS Studios design"
+        ;;
+
+    *)
+        echo "Clix 🖱️"
+        echo
+        echo "Usage:"
+        echo "  clix apply"
+        echo "  clix info"
+        ;;
+esac
